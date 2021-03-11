@@ -1,7 +1,7 @@
 # GF_DAE
-Implementation of the paper "Guided Filter Regularization for Improved Disentanglement of Shape and Appearance in Diffeomorphic Autoencoders"
+Implementation of the paper "Guided Filter Regularization for Improved Disentanglement of Shape and Appearance in Diffeomorphic Autoencoders" which is submitted for the MIDL2021 conference by Hristina Uzunova, Heinz Handels and Jan Ehrhardt.
 
-Paper: https://openreview.net/pdf?id=ILEMHPV_Lc2
+Paper Link: https://openreview.net/pdf?id=ILEMHPV_Lc2
 
 # Data
 The data used here are the T1 and T2 IXI images from: https://brain-development.org/ixi-dataset/
