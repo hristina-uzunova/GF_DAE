@@ -7,7 +7,7 @@ Paper Link: https://openreview.net/pdf?id=ILEMHPV_Lc2
 The data used here are the T1 and T2 IXI images from: https://brain-development.org/ixi-dataset/
 We preregister the 3D images in an affine manner and extract slice 77 and save the 2D images with the naming convention:
 "IXI*-$hospital$-*$modality$_affine.png" where $hospital$ is one of [Guys, IOP, HH] and $modality$ is one of [T1, T2]. 
-
+You can download the pre-processed images from https://cloud.imi.uni-luebeck.de/s/dsFe2rqfc6BiBdM .
 If you use another naming convention you will need to change the class IXI_Dataset_Grayvalues() in data.py.
 
 Examples: 
