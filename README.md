@@ -19,3 +19,15 @@ Examples:
 
 # Usage
 Use python run.py --data_path /path/to/your/images --out_path /path/to/your/out/dir
+
+# Citation
+Please cite this work as:
+
+@inproceedings{
+uzunova2021guided,
+title={Guided Filter Regularization for Improved Disentanglement of Shape and Appearance in Diffeomorphic Autoencoders},
+author={Hristina Uzunova and Heinz Handels and Jan Ehrhardt},
+booktitle={Medical Imaging with Deep Learning},
+year={2021},
+url={https://openreview.net/forum?id=ILEMHPV_Lc2}
+}
