@@ -2,14 +2,14 @@ from torch import optim
 from torch.utils.data.sampler import SubsetRandomSampler
 import argparse
 from torch.utils.data import DataLoader
-from GF_DAE_Code.model import *
-from GF_DAE_Code.DeepLearningUtils.data import *
+from model import *
+from DeepLearningUtils.data import *
 
 
 IMG_SHAPE= [256,192]
 
 def train(num_epochs, latent_dims, path, device, data_loader_train, data_loader_val, diff_fac=10, loss_type="L1",
-          smooth=False, fixed_atlas=None):
+          smooth=True, fixed_atlas=None):
     # fix the atlas?
     if fixed_atlas is None:
         init_template = torch.mean(torch.cat(data_loader_train.dataset.images).unsqueeze(1).to(device), dim=0)
@@ -40,7 +40,7 @@ def train(num_epochs, latent_dims, path, device, data_loader_train, data_loader_
             displ_field_run, recon_batch, mu_run, logvar_run = model(img_batch)
 
             loss = loss_function(recon_img=recon_batch, input_img=img_batch, disp_field=displ_field_run, mu=mu_run,
-                                 logvar=logvar_run, loss_type=loss_type)
+                                 logvar=logvar_run, loss_type=loss_type,diff_fac=diff_fac)
             loss.backward()
             train_loss += loss.data.item()
             optimizer.step()
@@ -108,13 +108,13 @@ def test(latent_dims, path, device, data_loader_test):
         G = grsp.GridSpec(1, 3)
         img_rec = np.array((recon_batch).float().cpu().squeeze().detach())
         img_real = np.array((img_batch.cpu().squeeze().detach()))
-        img_template = np.array((model_test.diff_a.cpu().squeeze().detach()))
+        img_delta_a = np.array((model_test.diff_a.cpu().squeeze().detach()))
         ax0 = plt.subplot(G[0, 0])
         ax1 = plt.subplot(G[0, 1])
         ax2 = plt.subplot(G[0, 2])
         ax0.imshow(img_real, cmap="gray")
         ax1.imshow(img_rec, cmap="gray")
-        ax2.imshow(img_template, cmap="gray")
+        ax2.imshow(img_delta_a, cmap="gray")
         plt.savefig(path + '/rec_img' + str(idx) + '.png')
         test_loss_sum += loss.data.item()
 
@@ -138,12 +138,12 @@ def test(latent_dims, path, device, data_loader_test):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--epochs", type=int, default=10, help='Nr of epochs')
+    parser.add_argument("--epochs", type=int, default=1000, help='Nr of epochs (a large number about 1000)')
     parser.add_argument("--batch_size", type=int, default=50, help="Batch size")
     parser.add_argument("--device_nr", type=int, default=1, help="GPU number")
     parser.add_argument("--n_training", type=int, default=500, help="Number of training images, 0 if all samples are to be taken")
     parser.add_argument("--n_folds", type=int, default=1, help="Number of folds")
-    parser.add_argument("--test",type=bool, default=True, help="Test?")
+    parser.add_argument("--test",type=bool, default=False, help="Test?")
     parser.add_argument("--train", type=bool, default=False, help="Train?")
     parser.add_argument("--loss", type=str, default="SSIM", help="What loss?")
     parser.add_argument("--smooth", type=bool, default=True, help="Use GF smoothin?")
@@ -152,8 +152,8 @@ if __name__ == "__main__":
     parser.add_argument("--hospital", type=str, default="all", help="all, [guys, hh, iop]<-- all combinations")
     parser.add_argument("--latent_dim_a", type=int, default=64, help="appearance latent dim")
     parser.add_argument("--latent_dim_s", type=int, default=512, help="shape latent dim")
-    parser.add_argument("--data_path", type=str, default="/../Data/IXIT1T2_s77", help="path to images")
-    parser.add_argument("--out_path", type=str, default="/../Tmp/",
+    parser.add_argument("--data_path", type=str, default="../Data/IXIT1T2_s77", help="path to images")
+    parser.add_argument("--out_path", type=str, default="../Tmp/",
                         help="path to output folder")
     args = parser.parse_args()
     print(args)

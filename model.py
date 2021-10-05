@@ -5,10 +5,10 @@ from torch import optim
 import torch.nn.functional as F
 from torch.autograd import Variable
 import torch.distributions
-from GF_DAE_Code.DeepLearningUtils.SSIM import SSIM
+from DeepLearningUtils.SSIM import SSIM
 
 import math
-from GF_DAE_Code.GuidedFilter.guided_filter import GuidedFilter
+from GuidedFilter.guided_filter import GuidedFilter
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -109,7 +109,7 @@ def loss_function(recon_img, input_img, disp_field, mu, logvar, diff_fac=10, los
     dy = (disp_field[:, 1:, 1:, :] - disp_field[:, 1:, :-1, :]).pow(2)
 
     d_disp_field = F.pad(dx + dy, (0, 0, 0, 1, 0, 1)).mean()+torch.mean(torch.abs(disp_field))
-    return in_out_diff + kld + diff_fac * d_disp_field
+    return diff_fac *in_out_diff + kld + diff_fac * d_disp_field
 
 
 class ADAE(nn.Module):
